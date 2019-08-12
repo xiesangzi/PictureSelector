@@ -154,6 +154,7 @@ public class LocalMediaLoader {
                         break;
                 }
                 Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, selection, selectionArgs, ORDER_BY);
+
                 try {
                     List<LocalMediaFolder> imageFolders = new ArrayList<>();
                     LocalMediaFolder allImageFolder = new LocalMediaFolder();
