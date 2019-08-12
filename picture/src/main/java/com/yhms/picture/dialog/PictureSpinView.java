@@ -19,11 +19,12 @@ package com.yhms.picture.dialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.yhms.picture.R;
 
-public class PictureSpinView extends ImageView implements PictureIndeterminate {
+public class PictureSpinView extends AppCompatImageView implements PictureIndeterminate {
 
     private float mRotateDegrees;
     private int mFrameTime;
