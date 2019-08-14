@@ -167,8 +167,8 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.tv_album:
                         //相册
                         PictureSelector.create(MainActivity.this)
-                                .openGallery(PictureMimeType.ofImage())
-                                .maxSelectNum(maxSelectNum)
+                                .openGallery(PictureMimeType.ofImage())//全部.PictureMimeType.ofAll()、图片.ofImage()、视频.ofVideo()、音频.ofAudio()
+                                .theme(R.style.picture_white_style)
                                 .minSelectNum(1)
                                 .imageSpanCount(4)
                                 .selectionMode(PictureConfig.MULTIPLE)
