@@ -21,7 +21,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -450,10 +449,10 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
      */
     private Uri parUri(File cameraFile) {
         Uri imageUri;
-        String authority = getPackageName() + ".com.yhms.picture.provider";
+        String authority = getPackageName() + ".PictureFileProvider";
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             //通过FileProvider创建一个content类型的Uri
-            imageUri = FileProvider.getUriForFile(mContext, authority, cameraFile);
+            imageUri = PictureFileProvider.getUriForFile(mContext, authority, cameraFile);
         } else {
             imageUri = Uri.fromFile(cameraFile);
         }
