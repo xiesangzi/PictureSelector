@@ -25,8 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class Luban implements Handler.Callback {
-    private static final String TAG = "Luban";
+public class CompressManager implements Handler.Callback {
+    private static final String TAG = "CompressManager";
     private static final String DEFAULT_DISK_CACHE_DIR = "luban_disk_cache";
 
     private static final int MSG_COMPRESS_SUCCESS = 0;
@@ -44,7 +44,7 @@ public class Luban implements Handler.Callback {
     private int index = -1;
     private Handler mHandler;
 
-    private Luban(Builder builder) {
+    private CompressManager(Builder builder) {
         this.mPaths = builder.mPaths;
         this.mediaList = builder.mediaList;
         this.mTargetDir = builder.mTargetDir;
@@ -261,8 +261,8 @@ public class Luban implements Handler.Callback {
             this.mStreamProviders = new ArrayList<>();
         }
 
-        private Luban build() {
-            return new Luban(this);
+        private CompressManager build() {
+            return new CompressManager(this);
         }
 
         public Builder load(InputStreamProvider inputStreamProvider) {

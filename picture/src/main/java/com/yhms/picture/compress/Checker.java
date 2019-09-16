@@ -13,7 +13,7 @@ import java.util.Arrays;
 enum Checker {
     SINGLE;
 
-    private static final String TAG = "Luban";
+    private static final String TAG = "CompressManager";
 
     private static final String JPG = ".jpg";
 

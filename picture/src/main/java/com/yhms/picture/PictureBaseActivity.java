@@ -18,7 +18,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.yhms.crop.UCrop;
 import com.yhms.crop.UCropMulti;
 import com.yhms.crop.util.BitmapUtils;
-import com.yhms.picture.compress.Luban;
+import com.yhms.picture.compress.CompressManager;
 import com.yhms.picture.compress.OnCompressListener;
 import com.yhms.picture.config.PictureConfig;
 import com.yhms.picture.config.PictureMimeType;
@@ -212,7 +212,7 @@ public class PictureBaseActivity extends FragmentActivity {
                     .observeOn(Schedulers.io())
                     .map(list -> {
                         List<File> files =
-                                Luban.with(mContext)
+                                CompressManager.with(mContext)
                                         .loadMediaData(list)
                                         .setTargetDir(config.compressSavePath)
                                         .ignoreBy(config.minimumCompressSize)
@@ -225,7 +225,7 @@ public class PictureBaseActivity extends FragmentActivity {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(files -> handleCompressCallBack(result, files));
         } else {
-            Luban.with(this)
+            CompressManager.with(this)
                     .loadMediaData(result)
                     .ignoreBy(config.minimumCompressSize)
                     .setTargetDir(config.compressSavePath)
