@@ -32,8 +32,6 @@ public class Luban implements Handler.Callback {
     private static final int MSG_COMPRESS_SUCCESS = 0;
     private static final int MSG_COMPRESS_START = 1;
     private static final int MSG_COMPRESS_ERROR = 2;
-    private static final int MSG_COMPRESS_MULTIPLE_SUCCESS = 3;
-
     private String mTargetDir;
     private boolean focusAlpha;
     private int mLeastCompressSize;
@@ -138,29 +136,26 @@ public class Luban implements Handler.Callback {
         while (iterator.hasNext()) {
             final InputStreamProvider path = iterator.next();
 
-            AsyncTask.SERIAL_EXECUTOR.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        index++;
-                        mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
+            AsyncTask.SERIAL_EXECUTOR.execute(() -> {
+                try {
+                    index++;
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
+                    if (mediaList != null && mediaList.size() > 0) {
                         File result = compress(context, path);
-                        if (mediaList != null && mediaList.size() > 0) {
-                            LocalMedia media = mediaList.get(index);
-                            String path = result.getAbsolutePath();
-                            boolean eqHttp = PictureMimeType.isHttp(path);
-                            media.setCompressed(eqHttp ? false : true);
-                            media.setCompressPath(eqHttp ? "" : result.getAbsolutePath());
-                            boolean isLast = index == mediaList.size() - 1;
-                            if (isLast) {
-                                mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_MULTIPLE_SUCCESS, mediaList));
-                            }
-                        } else {
-                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_SUCCESS, result));
+                        LocalMedia media = mediaList.get(index);
+                        String path1 = result.getAbsolutePath();
+                        boolean eqHttp = PictureMimeType.isHttp(path1);
+                        media.setCompressed(eqHttp ? false : true);
+                        media.setCompressPath(eqHttp ? "" : result.getAbsolutePath());
+                        boolean isLast = index == mediaList.size() - 1;
+                        if (isLast) {
+                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_SUCCESS, mediaList));
                         }
-                    } catch (IOException e) {
-                        mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, e));
+                    } else {
+                        mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, new Exception("图片压缩失败！")));
                     }
+                } catch (IOException e) {
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, e));
                 }
             });
 
@@ -240,6 +235,8 @@ public class Luban implements Handler.Callback {
                 break;
             case MSG_COMPRESS_ERROR:
                 mCompressListener.onError((Throwable) msg.obj);
+                break;
+            default:
                 break;
         }
         return false;
