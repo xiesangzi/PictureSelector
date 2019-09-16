@@ -276,12 +276,13 @@ public final class PictureMimeType {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static int getLocalVideoDurationToAndroidQ(Context context, String videoPath) {
         int duration;
+        Cursor cursor = null;
         try {
-            Cursor query = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
+            cursor = context.getApplicationContext().getContentResolver().query(Uri.parse(videoPath),
                     null, null, null);
-            if (query != null) {
-                query.moveToFirst();
-                duration = query.getInt(query.getColumnIndexOrThrow(MediaStore.Video
+            if (cursor != null) {
+                cursor.moveToFirst();
+                duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video
                         .Media.DURATION));
                 return duration;
             }
@@ -289,6 +290,10 @@ public final class PictureMimeType {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 

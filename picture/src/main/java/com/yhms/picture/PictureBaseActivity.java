@@ -502,6 +502,7 @@ public class PictureBaseActivity extends FragmentActivity {
      * @return
      */
     protected int getLastImageId(boolean eqVideo) {
+        Cursor imageCursor = null;
         try {
             //selection: 指定查询条件
             String absolutePath = PictureFileUtils.getDCIMCameraPath(this);
@@ -510,7 +511,7 @@ public class PictureBaseActivity extends FragmentActivity {
                     MediaStore.Images.Media.DATA + " like ?";
             //定义selectionArgs：
             String[] selectionArgs = {absolutePath + "%"};
-            Cursor imageCursor = this.getContentResolver().query(eqVideo ?
+            imageCursor = this.getContentResolver().query(eqVideo ?
                             MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                             : MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
                     selection, selectionArgs, ORDER_BY);
@@ -522,7 +523,6 @@ public class PictureBaseActivity extends FragmentActivity {
                         imageCursor.getColumnIndex(MediaStore.Video.Media.DURATION)
                         : imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
                 int duration = DateUtils.dateDiffer(date);
-                imageCursor.close();
                 // DCIM文件下最近时间30s以内的图片，可以判定是最新生成的重复照片
                 return duration <= 30 ? id : -1;
             } else {
@@ -531,6 +531,10 @@ public class PictureBaseActivity extends FragmentActivity {
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
+        } finally {
+            if (imageCursor != null) {
+                imageCursor.close();
+            }
         }
     }
 
@@ -588,14 +592,17 @@ public class PictureBaseActivity extends FragmentActivity {
      */
     protected String getAudioFilePathFromUri(Uri uri) {
         String path = "";
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         try {
-            Cursor cursor = getContentResolver()
-                    .query(uri, null, null, null, null);
             cursor.moveToFirst();
             int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
             path = cursor.getString(index);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
         return path;
     }

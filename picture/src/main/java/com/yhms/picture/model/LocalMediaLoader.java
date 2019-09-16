@@ -153,34 +153,34 @@ public class LocalMediaLoader {
                     default:
                         break;
                 }
-                Cursor data = mContext.getContentResolver().query(QUERY_URI, PROJECTION, selection, selectionArgs, ORDER_BY);
-
+                Cursor cursor = null;
                 try {
+                    cursor = mContext.getContentResolver().query(QUERY_URI, PROJECTION, selection, selectionArgs, ORDER_BY);
                     List<LocalMediaFolder> imageFolders = new ArrayList<>();
                     LocalMediaFolder allImageFolder = new LocalMediaFolder();
                     List<LocalMedia> latelyImages = new ArrayList<>();
-                    if (data != null) {
-                        int count = data.getCount();
+                    if (cursor != null) {
+                        int count = cursor.getCount();
                         if (count > 0) {
-                            data.moveToFirst();
+                            cursor.moveToFirst();
                             do {
-                                long id = data.getLong
-                                        (data.getColumnIndexOrThrow(PROJECTION[0]));
+                                long id = cursor.getLong
+                                        (cursor.getColumnIndexOrThrow(PROJECTION[0]));
 
-                                String path = isAndroidQ ? getRealPathAndroid_Q(id) : data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION[1]));
+                                String path = isAndroidQ ? getRealPathAndroid_Q(id) : cursor.getString
+                                        (cursor.getColumnIndexOrThrow(PROJECTION[1]));
 
-                                String pictureType = data.getString
-                                        (data.getColumnIndexOrThrow(PROJECTION[2]));
+                                String pictureType = cursor.getString
+                                        (cursor.getColumnIndexOrThrow(PROJECTION[2]));
 
-                                int w = data.getInt
-                                        (data.getColumnIndexOrThrow(PROJECTION[3]));
+                                int w = cursor.getInt
+                                        (cursor.getColumnIndexOrThrow(PROJECTION[3]));
 
-                                int h = data.getInt
-                                        (data.getColumnIndexOrThrow(PROJECTION[4]));
+                                int h = cursor.getInt
+                                        (cursor.getColumnIndexOrThrow(PROJECTION[4]));
 
-                                int duration = data.getInt
-                                        (data.getColumnIndexOrThrow(PROJECTION[5]));
+                                int duration = cursor.getInt
+                                        (cursor.getColumnIndexOrThrow(PROJECTION[5]));
 
                                 LocalMedia image = new LocalMedia
                                         (path, duration, type, pictureType, w, h);
@@ -192,8 +192,7 @@ public class LocalMediaLoader {
                                 latelyImages.add(image);
                                 int imageNum = allImageFolder.getImageNum();
                                 allImageFolder.setImageNum(imageNum + 1);
-                            } while (data.moveToNext());
-
+                            } while (cursor.moveToNext());
                             if (latelyImages.size() > 0) {
                                 sortFolder(imageFolders);
                                 imageFolders.add(0, allImageFolder);
@@ -210,6 +209,10 @@ public class LocalMediaLoader {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
                 }
                 return getDefault();
             }
