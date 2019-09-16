@@ -145,7 +145,6 @@ public class Luban implements Handler.Callback {
                         index++;
                         mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_START));
                         File result = compress(context, path);
-
                         if (mediaList != null && mediaList.size() > 0) {
                             LocalMedia media = mediaList.get(index);
                             String path = result.getAbsolutePath();
@@ -157,9 +156,8 @@ public class Luban implements Handler.Callback {
                                 mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_MULTIPLE_SUCCESS, mediaList));
                             }
                         } else {
-                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, new IOException()));
+                            mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_SUCCESS, result));
                         }
-                        mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_SUCCESS, result));
                     } catch (IOException e) {
                         mHandler.sendMessage(mHandler.obtainMessage(MSG_COMPRESS_ERROR, e));
                     }
